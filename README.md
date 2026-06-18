@@ -1,10 +1,19 @@
 # Elucidômetro — v1.0
 
-Ferramenta web de **índice de solvabilidade investigativa** de homicídios dolosos. Estima, a partir das características registradas no momento do crime, a probabilidade histórica de elucidação de casos com perfil semelhante. Funciona inteiramente no navegador — **nenhum dado é enviado a servidores**.
+Ferramenta web de **índice de solvabilidade investigativa** de homicídios dolosos. Estima, a partir das características registradas no momento do crime, a probabilidade histórica de elucidação de casos com perfil semelhante.
 
 > **A ferramenta informa, não decide.** Não mede eficácia investigativa, não avalia desempenho de equipes e **não** autoriza reduzir o esforço investigativo em nenhum caso. Ver a página *Governança & ética* na própria ferramenta.
 
 Site: **www.elucidometro.com.br**
+
+---
+
+## Como o processamento funciona
+
+A ferramenta tem dois caminhos, com tratamentos diferentes de privacidade:
+
+- **Modelo oficial da tese** → roda em **servidor seguro** (Cloudflare Worker). O navegador envia apenas as **características do caso** (idade, sexo, meio empregado etc.) e recebe de volta **somente a probabilidade estimada**. Os **coeficientes do modelo permanecem no servidor** e não são transferidos para o navegador.
+- **Bases próprias (CSV) e bases de demonstração** → são processadas **inteiramente no seu navegador**; nenhum dado dessas bases é enviado a servidores.
 
 ---
 
@@ -13,60 +22,30 @@ Site: **www.elucidometro.com.br**
 - **Dois modelos**, na ordem de referência:
   - **INEH** — modelo completo (inclui todos os casos).
   - **IEIL** — métrica complementar, que exclui flagrantes e mortes por intervenção de agente do Estado.
-- **Modelo real da tese embarcado** (DF, 2018–2023): coeficientes ajustados em Python (scikit-learn, regressão logística L2, C=0,1). Botão *"Carregar modelo real"* — INEH n=1342 (AUC 0,72) · IEIL n=1068 (AUC 0,71).
-- **Upload de base própria (CSV)**: a ferramenta trata os dados automaticamente — reconhece/renomeia as colunas do questionário, deriva ano/mês/tempo de resposta a partir das datas, remove variáveis que vazam o resultado, normaliza o alvo (Sim/Não) e separa IEIL de INEH. O treino no navegador é uma **estimativa** (não idêntica ao scikit-learn).
-- **Opção avançada — importar JSON**: carrega coeficientes já ajustados pelo pipeline oficial em Python, com **fidelidade total**.
-- **Bases fictícias** para demonstração (dados sintéticos, não reais).
-- **Elucidômetro interativo**: ajusta as características do caso e mostra a probabilidade estimada em tempo real.
-- **Exportações**: HTML offline autossuficiente e especificação técnica em JSON.
-- **Documentação & metodologia** e **Governança & ética** acessíveis por botões na própria ferramenta.
+- **Modelo real da tese** (DF, 2018–2023): coeficientes ajustados em Python (scikit-learn, regressão logística L2, C=0,1). Botão *"Carregar Elucidômetro oficial"* — INEH n=1342 (AUC 0,72) · IEIL n=1068 (AUC 0,71). O cálculo é feito no servidor seguro.
+- **Upload de base própria (CSV)**: a ferramenta trata os dados automaticamente — reconhece/renomeia as colunas do questionário, deriva ano/mês/tempo de resposta a partir das datas, remove variáveis que vazam o resultado, normaliza o alvo (Sim/Não) e separa IEIL de INEH. O treino no navegador é uma **estimativa** (reimplementação, não idêntica ao scikit-learn).
+- **Elucidômetro interativo**: ajuste as características do caso e acompanhe a probabilidade estimada em tempo real.
 
 ---
 
-## Estrutura de publicação
-
-O site é estático e composto pelos arquivos abaixo, todos na **raiz** do repositório:
+## Arquitetura
 
 ```
-index.html                → aplicação (interface + lógica)
-support.js                → runtime que renderiza a aplicação
-elucidometro_spec_v6.js   → modelo real da tese (coeficientes)
-elucidometro_ingest.js    → tratamento automático das colunas do CSV
-elucidometro_gov.js       → texto de governança e ética
-CNAME                     → mantém o domínio elucidometro.com.br (NÃO remover)
-.nojekyll                 → desliga o Jekyll do GitHub Pages (NÃO remover)
+Frontend (GitHub Pages, público)
+  ├── index.html, support.js, elucidometro_ingest.js, elucidometro_gov.js
+  └── elucidometro-config.js   ← URL do servidor seguro
+
+Servidor seguro (Cloudflare Worker, privado)
+  └── contém os coeficientes do modelo; expõe POST /score → { concpc, ieil }
 ```
 
-Os quatro `.js` precisam ficar **na mesma pasta** que o `index.html`. A aplicação só depende, externamente, das fontes do Google.
-
-### Como atualizar a ferramenta
-
-1. Obtenha os arquivos novos (apenas os que mudaram).
-2. No repositório, **Add file → Upload files** e arraste os arquivos (substituem os de mesmo nome).
-3. *Commit changes* (ex.: `Atualiza Elucidometro vX`).
-4. Aguarde 1–3 min (GitHub Pages republica) e recarregue o site com Ctrl+F5.
-5. **Não apague** os arquivos `CNAME` e `.nojekyll`.
+> Os coeficientes da tese ficam **apenas** no servidor (Cloudflare Worker) e **nunca** são publicados neste repositório.
 
 ---
 
-## Privacidade e dados
+## Créditos
 
-- Todo o processamento (leitura do CSV, tratamento e cálculo) ocorre **localmente no navegador**.
-- A ferramenta publica apenas **coeficientes** do modelo — nunca microdados ou registros de vítimas.
-
----
-
-## Créditos e referência
-
-- **Modelo e idealização:** Marcelo Zago.
+- **Modelo e idealização:** Marcelo Zago — tese de doutorado no IDP (Instituto Brasileiro de Ensino, Desenvolvimento e Pesquisa).
 - **Orientadores:** Felix Lopez (IPEA) e Franco Perazzoni (PF).
 
-Referência da tese que originou o modelo:
-
-> FERREIRA, Marcelo Zago Gomes. *Determinantes da eficácia investigativa em homicídios dolosos no Distrito Federal: uma análise multidimensional a partir do framework DOTS (2018–2023).* 2026. Tese (Doutorado Profissional em Administração Pública) — Instituto Brasileiro de Ensino, Desenvolvimento e Pesquisa (IDP), Brasília, 2026.
-
-A documentação de governança, ética e limitações está embutida na ferramenta (botão *Governança & ética*) e é derivada das seções 8.2.5, 9.2, 9.3 e 9.4 da tese.
-
----
-
-*Versão 1.0 — modelo de solvabilidade. Ferramenta de apoio à decisão investigativa.*
+Ferramenta de apoio à decisão investigativa. Não mede eficácia investigativa nem deve ser usada como critério excludente.
