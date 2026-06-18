@@ -25,22 +25,27 @@ Site: **www.elucidometro.com.br**
 
 ## Estrutura de publicação
 
-O site é **um único arquivo** autossuficiente:
+O site é estático e composto pelos arquivos abaixo, todos na **raiz** do repositório:
 
 ```
-index.html      → aplicação completa (tudo embutido; só depende das fontes do Google)
-CNAME           → mantém o domínio elucidometro.com.br (NÃO remover)
+index.html                → aplicação (interface + lógica)
+support.js                → runtime que renderiza a aplicação
+elucidometro_spec_v6.js   → modelo real da tese (coeficientes)
+elucidometro_ingest.js    → tratamento automático das colunas do CSV
+elucidometro_gov.js       → texto de governança e ética
+CNAME                     → mantém o domínio elucidometro.com.br (NÃO remover)
+.nojekyll                 → desliga o Jekyll do GitHub Pages (NÃO remover)
 ```
 
-Não há mais dependência de scripts externos (`standalone.js` etc. do modelo anterior podem ser removidos).
+Os quatro `.js` precisam ficar **na mesma pasta** que o `index.html`. A aplicação só depende, externamente, das fontes do Google.
 
 ### Como atualizar a ferramenta
 
-1. Obtenha o novo `index.html`.
-2. No repositório, **Add file → Upload files** e arraste o `index.html` (substitui o anterior).
+1. Obtenha os arquivos novos (apenas os que mudaram).
+2. No repositório, **Add file → Upload files** e arraste os arquivos (substituem os de mesmo nome).
 3. *Commit changes* (ex.: `Atualiza Elucidometro vX`).
 4. Aguarde 1–3 min (GitHub Pages republica) e recarregue o site com Ctrl+F5.
-5. **Não apague** o arquivo `CNAME`.
+5. **Não apague** os arquivos `CNAME` e `.nojekyll`.
 
 ---
 
