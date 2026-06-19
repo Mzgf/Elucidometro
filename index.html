@@ -16,7 +16,7 @@
 body{background:#e7ebef}
 @keyframes elu-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 </style>
-<script src="./elucidometro-config.js"></script>
+<script src="./elucidometro_spec_v6.js"></script>
 <script src="./elucidometro_ingest.js"></script>
 <script src="./elucidometro_gov.js"></script>
 </helmet>
@@ -30,7 +30,7 @@ body{background:#e7ebef}
         <span style="width:7px;height:7px;background:#dbb262;transform:rotate(45deg);display:inline-block"></span>Análise Criminal Preditiva
       </div>
       <h1 style="font-family:'Newsreader',Georgia,serif;font-size:3.5rem;font-weight:600;line-height:1.02;margin:16px 0 18px;letter-spacing:-.015em">Elucidômetro</h1>
-      <p style="font-size:1.06rem;line-height:1.62;color:rgba(255,255,255,.84);max-width:680px;font-weight:300">Treine modelos preditivos de elucidação de homicídios dolosos a partir de uma base CSV e explore o índice de solvabilidade de forma interativa. As bases que você envia são processadas no seu navegador; o modelo oficial da tese roda em servidor seguro, que recebe apenas as características do caso e devolve a estimativa.</p>
+      <p style="font-size:1.06rem;line-height:1.62;color:rgba(255,255,255,.84);max-width:680px;font-weight:300">Treine modelos preditivos de elucidação de homicídios dolosos a partir de uma base CSV e explore o índice de solvabilidade de forma interativa. Todo o processamento ocorre no seu navegador — nenhum dado é enviado a servidores.</p>
       <div style="display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;align-items:center">
         <span style="font-size:11px;letter-spacing:.06em;color:#14233b;background:#dbb262;border-radius:999px;padding:6px 13px;font-weight:600">Versão 1.0</span>
         <span style="font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 13px">Modelo de solvabilidade</span>
@@ -126,8 +126,8 @@ body{background:#e7ebef}
     <section style="animation:elu-rise .45s ease both">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px">
         <div>
-          <h2 style="font-family:'Newsreader',serif;font-size:1.7rem;font-weight:600;color:#14233b;letter-spacing:-.01em">{{ resultsTitle }}</h2>
-          <p style="color:#6b7a8d;font-size:.9rem;margin-top:2px">{{ resultsSubtitle }}</p>
+          <h2 style="font-family:'Newsreader',serif;font-size:1.7rem;font-weight:600;color:#14233b;letter-spacing:-.01em">Resultados do treinamento</h2>
+          <p style="color:#6b7a8d;font-size:.9rem;margin-top:2px">Métricas dos modelos treinados com a base enviada.</p>
         </div>
         <button onClick="{{ onReset }}" style="border:1px solid #cdd6df;background:#fff;color:#14233b;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer" style-hover="background:#f3f6f9">↻ Nova base</button>
       </div>
@@ -136,7 +136,6 @@ body{background:#e7ebef}
         <div style="padding:11px 15px;border-radius:8px;font-size:.85rem;margin-bottom:10px;{{ a.style }}">{{ a.msg }}</div>
       </sc-for>
 
-      <sc-if value="{{ showMetrics }}" hint-placeholder-val="{{ false }}">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px">
         <sc-for list="{{ metricsCards }}" as="m" hint-placeholder-count="2">
           <div style="background:#fff;border:1px solid #dde3ea;border-radius:14px;overflow:hidden;box-shadow:0 6px 22px rgba(15,41,66,.06)">
@@ -170,7 +169,6 @@ body{background:#e7ebef}
           </div>
         </sc-for>
       </div>
-      </sc-if>
 
       <h2 style="font-family:'Newsreader',serif;font-size:1.7rem;font-weight:600;color:#14233b;text-align:center;letter-spacing:-.01em;margin-top:42px">Elucidômetro interativo</h2>
       <p style="text-align:center;color:#6b7a8d;font-size:.9rem;margin:4px 0 18px">Ajuste as características do caso e acompanhe a probabilidade estimada em tempo real.</p>
@@ -202,10 +200,8 @@ body{background:#e7ebef}
               </div>
             </div>
             <div style="font-size:.82rem;color:#6b7a8d;text-align:center;font-style:italic;margin-top:6px;min-height:34px;line-height:1.45">{{ interpretation }}</div>
-            <sc-if value="{{ showExports }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ onDlHtml }}" style="display:block;width:100%;padding:13px;border:none;border-radius:10px;background:#dbb262;color:#3a2e10;font-family:'IBM Plex Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:16px" style-hover="filter:brightness(1.04)">↓ Baixar Elucidômetro (HTML offline)</button>
             <button onClick="{{ onDlJson }}" style="display:block;width:100%;padding:12px;border:1px solid #cdd6df;border-radius:10px;background:#fff;color:#14233b;font-family:'IBM Plex Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;margin-top:10px" style-hover="background:#f3f6f9">↓ Baixar especificação (JSON)</button>
-            </sc-if>
           </div>
         </div>
 
@@ -663,11 +659,11 @@ class Component extends DCLogic {
   };
 
   onReset=()=>{
-    this.setState({phase:"upload",spec:null,fileName:null,csvText:null,alerts:[],progress:0,showProgress:false,busy:false,official:false,officialProb:null,officialMeta:null});
+    this.setState({phase:"upload",spec:null,fileName:null,csvText:null,alerts:[],progress:0,showProgress:false,busy:false});
     window.scrollTo({top:0,behavior:"smooth"});
   };
 
-  setField=(id,val)=>{ var self=this; this.setState(function(s){var f=Object.assign({},s.form);f[id]=val;return {form:f};}, function(){ if(self.state.official) self._scheduleFetch(); }); };
+  setField=(id,val)=>{ this.setState(function(s){var f=Object.assign({},s.form);f[id]=val;return {form:f};}); };
   onSetIeil=()=>{ this.setState({currentModel:"ieil"}); };
   onSetConcpc=()=>{ this.setState({currentModel:"concpc"}); };
   onOpenDocs=()=>{ this.setState({showDocs:true}); };
@@ -752,28 +748,19 @@ class Component extends DCLogic {
     this.setState({csvText:gen.csv,fileName:gen.rotulo+" — "+gen.n+" registros",alerts:[]});
     setTimeout(function(){ self.onTrain(); }, 80);
   };
-  API_BASE = (typeof window!=="undefined" && window.ELUCIDOMETRO_API) ? window.ELUCIDOMETRO_API : "";
-  fetchOfficialScore=()=>{
-    var self=this;
-    if(!this.state.official) return;
-    var base=(this.API_BASE||"").replace(/\/+$/,"");
-    if(!base){ this.setState({alerts:[{type:"err",msg:"Servidor do modelo não configurado. Defina a URL da API em elucidometro-config.js."}]}); return; }
-    fetch(base+"/score",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({form:this.formState()})})
-      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
-      .then(function(d){ if(!self.state.official) return; self.setState({officialProb:{concpc:d.concpc,ieil:d.ieil}}); })
-      .catch(function(err){ self.setState({alerts:[{type:"err",msg:"Falha ao consultar o servidor seguro do modelo: "+(err&&err.message?err.message:err)}]}); });
-  };
-  _scheduleFetch=()=>{ var self=this; clearTimeout(this._ft); this._ft=setTimeout(function(){ self.fetchOfficialScore(); },180); };
   onLoadReal=()=>{
-    var self=this;
+    var src = (typeof window!=="undefined" && window.ELUCIDOMETRO_SPEC_V6) ? window.ELUCIDOMETRO_SPEC_V6 : null;
+    if(!src){ this.setState({alerts:[{type:"err",msg:"Especificação do modelo real não pôde ser carregada."}]}); return; }
+    var spec = JSON.parse(JSON.stringify(src));
+    spec.timestamp = spec.timestamp || new Date().toISOString();
+    spec.C = spec.C || 0.1;
+    if(!spec.ieil.feature_names) spec.ieil.feature_names = Object.keys(spec.ieil.coefs);
+    if(!spec.concpc.feature_names) spec.concpc.feature_names = Object.keys(spec.concpc.coefs);
     this.setState({
-      official:true, spec:null, phase:"results", currentModel:"concpc",
-      fileName:"Modelo real — DF 2018–2023 (servidor seguro)", busy:false, showProgress:false, progress:0,
-      officialMeta:{concpc:{n:1342,auc_train:0.72},ieil:{n:1068,auc_train:0.71}},
-      officialProb:{concpc:null,ieil:null},
-      alerts:[{type:"info",msg:"Modelo real da tese carregado a partir do servidor seguro. Os coeficientes permanecem no servidor e não são transferidos para o navegador."}]
+      spec:spec, phase:"results", currentModel:"concpc",
+      fileName:"Modelo real — DF 2018–2023", busy:false, showProgress:false, progress:0,
+      alerts:[{type:"info",msg:"Modelo real da tese carregado (DF, 2018–2023). Coeficientes ajustados via scikit-learn (regressão logística L2, C=0,1). INEH: n=1342, AUC treino 0,72 · IEIL: n=1068, AUC treino 0,71."}]
     });
-    setTimeout(function(){ self.fetchOfficialScore(); },60);
     window.scrollTo({top:0,behavior:"smooth"});
   };
   _loadSpecObject(spec, origem){
@@ -974,15 +961,14 @@ class Component extends DCLogic {
       })(this)
     };
 
-    if(S.phase!=="results" || (!S.spec && !S.official)) return base;
+    if(!S.spec || S.phase!=="results") return base;
 
-    var self=this, official=!!S.official, spec=S.spec, cm=S.currentModel;
-    var meta = official ? (S.officialMeta||{concpc:{n:1342,auc_train:0.72},ieil:{n:1068,auc_train:0.71}}) : null;
+    var self=this, spec=S.spec, cm=S.currentModel;
 
     var defs=[{key:"concpc",title:"INEH",desc:"Modelo completo — inclui flagrantes"},
               {key:"ieil",title:"IEIL",desc:"Exclui flagrantes e mortes por agente do Estado"}];
     var k=this.props.coefCount||8;
-    var metricsCards=official?[]:defs.map(function(d){
+    var metricsCards=defs.map(function(d){
       var model=spec[d.key], coefs=self.topCoefs(model,k);
       var maxAbs=Math.max.apply(null,coefs.map(function(c){return Math.abs(c.val);}))||1;
       return {
@@ -1010,15 +996,12 @@ class Component extends DCLogic {
       })};
     });
 
-    var probRaw = official ? ((S.officialProb && S.officialProb[cm]!=null) ? S.officialProb[cm] : null) : this.computeProbability(spec[cm], this.formState());
-    var loading = (probRaw==null);
-    var prob = loading?0:probRaw;
-    var pct=(loading?"--":(prob*100).toFixed(1)), color, label;
+    var prob=this.computeProbability(spec[cm], this.formState());
+    var pct=(prob*100).toFixed(1), color, label;
     if(prob<0.35){color="#c4453b";label="Baixa probabilidade de elucidação — caso de alta complexidade investigativa";}
     else if(prob<0.55){color="#cd8a2a";label="Probabilidade intermediária — complexidade moderada";}
     else if(prob<0.75){color="#2a6f9e";label="Probabilidade moderada-alta — características favorecem a elucidação";}
     else{color="#1f9163";label="Alta probabilidade de elucidação — perfil tipicamente solúvel";}
-    if(loading){ color="#9aa7b4"; label="Consultando o servidor seguro do modelo…"; }
 
     var SA=Math.PI, EA=2*Math.PI, R=110, CX=140, CY=140;
     var gp=Math.max(0.5,Math.min(99.5,prob*100)), ea=SA+(gp/100)*(EA-SA);
@@ -1032,20 +1015,16 @@ class Component extends DCLogic {
       };
     });
 
-    var ieilM=official?meta.ieil:spec.ieil, concM=official?meta.concpc:spec.concpc;
+    var ieilM=spec.ieil, concM=spec.concpc;
     var modelInfo = cm==="ieil"
-      ? "IEIL · n="+ieilM.n+" · exclui flagrantes · AUC "+Number(ieilM.auc_train).toFixed(2)+(official?" · servidor seguro":"")
-      : "INEH · n="+concM.n+" · inclui flagrantes · AUC "+Number(concM.auc_train).toFixed(2)+(official?" · servidor seguro":"");
+      ? "IEIL · n="+ieilM.n+" · exclui flagrantes · AUC "+ieilM.auc_train.toFixed(2)
+      : "INEH · n="+concM.n+" · inclui flagrantes · AUC "+concM.auc_train.toFixed(2);
     var activeStyle="background:#14233b;color:#fff", idleStyle="background:#fff;color:#14233b";
 
     return Object.assign(base, {
       metricsCards: metricsCards,
       formGroups: formGroups,
       modelInfo: modelInfo,
-      showMetrics: !official,
-      showExports: !official,
-      resultsTitle: official?"Elucidômetro oficial (servidor seguro)":"Resultados do treinamento",
-      resultsSubtitle: official?"Modelo da tese (DF, 2018–2023) — o cálculo roda em servidor; os coeficientes não trafegam para o navegador.":"Métricas dos modelos treinados com a base enviada.",
       ieilBtnStyle: cm==="ieil"?activeStyle:idleStyle,
       concBtnStyle: cm==="concpc"?activeStyle:idleStyle,
       gaugeTrackD: this._arcPath(SA,EA-0.001),
