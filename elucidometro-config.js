@@ -5,4 +5,4 @@
    É a única coisa que você precisa editar no frontend.
    Exemplo: "https://elucidometro-api.SEU-USUARIO.workers.dev"
    ============================================================ */
-window.ELUCIDOMETRO_API = "https://COLE-AQUI-A-URL-DO-SEU-WORKER.workers.dev";
+window.ELUCIDOMETRO_API = "https://elucidometro.ferreirazago.workers.dev";
