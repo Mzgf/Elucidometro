@@ -45,7 +45,7 @@ Servidor seguro (Cloudflare Worker, privado)
 
 ## Créditos
 
-- **Modelo e idealização:** Marcelo Zago — tese de doutorado no IDP (Instituto Brasileiro de Ensino, Desenvolvimento e Pesquisa).
+- **Modelo e idealização:** Marcelo Zago Gomes Ferreira — tese de doutorado no IDP (Instituto Brasileiro de Ensino, Desenvolvimento e Pesquisa).
 - **Orientadores:** Felix Lopez (IPEA) e Franco Perazzoni (PF).
 
 Ferramenta de apoio à decisão investigativa. Não mede eficácia investigativa nem deve ser usada como critério excludente.
